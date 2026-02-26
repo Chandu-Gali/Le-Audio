@@ -1,0 +1,404 @@
+
+////////////////////////pipewire, pipewire-pulse, wireplumber all are inactive and maked///////////
+
+sachin@sachin-9-Notebook-PC:~/ncs/v3.1.0/nrf/applications/nrf5340_audio$ systemctl --user status pipewire pipewire-pulse wireplumber
+○ pipewire.service
+     Loaded: masked (Reason: Unit pipewire.service is masked.)
+     Active: inactive (dead)
+TriggeredBy: ○ pipewire.socket
+
+○ pipewire-pulse.service
+     Loaded: masked (Reason: Unit pipewire-pulse.service is masked.)
+     Active: inactive (dead)
+TriggeredBy: ○ pipewire-pulse.socket
+
+○ wireplumber.service
+     Loaded: masked (Reason: Unit wireplumber.service is masked.)
+     Active: inactive (dead)
+sachin@sachin-9-Notebook-PC:~/ncs/v3.1.0/nrf/applications/nrf5340_audio$ 
+
+
+
+
+--> now the system sound will not work as everything is inactive and masked
+--> but when we reload the alsa using 
+
+$sudo alsa force-reload
+$sudo usermod -aG audio $USER
+
+--> by doing this automatically the pulseaudio is becoming active so the system sound will work 
+--> we can check these by using the 
+
+$systemctl --user status pulseaudio
+$systemctl --user stop pulseaudio  // the system sound is disabled
+$systemctl --user start pulseaudio // the system sound is enabled
+
+--> in bluetoothctl we can clearly see the chnages as it'll add the uuid's(when we start pulseaudio) and remove the uuid's (when we stop pulseaudio)
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+when the pulseaudio is active it's adding all the uuid's and show's the audio source and audio sink as shown below
+
+sachin@sachin-9-Notebook-PC:~/ncs/v3.1.0/nrf/applications/nrf5340_audio$ systemctl --user start pulseaudio
+sachin@sachin-9-Notebook-PC:~/ncs/v3.1.0/nrf/applications/nrf5340_audio$ systemctl --user status pulseaudio
+● pulseaudio.service - Sound Service
+     Loaded: loaded (/usr/lib/systemd/user/pulseaudio.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2026-02-26 13:14:31 IST; 19s ago
+TriggeredBy: ● pulseaudio.socket
+   Main PID: 34027 (pulseaudio)
+      Tasks: 3 (limit: 18653)
+     Memory: 6.4M
+        CPU: 120ms
+     CGroup: /user.slice/user-1000.slice/user@1000.service/session.slice/pulseaudio.service
+             └─34027 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+
+Feb 26 13:14:31 sachin-9-Notebook-PC systemd[1543]: Starting Sound Service...
+Feb 26 13:14:31 sachin-9-Notebook-PC systemd[1543]: Started Sound Service.
+Feb 26 13:14:31 sachin-9-Notebook-PC pulseaudio[34027]: Remote endpoint /org/bluez/hci0/dev_7D_BA_B9>
+Feb 26 13:14:31 sachin-9-Notebook-PC pulseaudio[34027]: Remote endpoint /org/bluez/hci0/dev_7D_BA_B9>
+lines 1-15/15 (END)
+
+in bluetoothctl the changes are
+
+[CHG] Controller 14:75:5B:3F:5E:02 Class: 0x0030010c
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001133-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001845-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001104-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001844-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00005005-0000-1000-8000-0002ee000001
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184d-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001843-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110b-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001108-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001850-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001106-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 Class: 0x0070010c
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001133-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001845-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001104-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001844-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00005005-0000-1000-8000-0002ee000001
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184d-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001843-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110b-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001108-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001850-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001106-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 Class: 0x0074010c
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001133-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001845-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001104-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001844-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00005005-0000-1000-8000-0002ee000001
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184d-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001843-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110b-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001108-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001850-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001106-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 Class: 0x007c010c
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001133-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001845-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001104-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001844-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00005005-0000-1000-8000-0002ee000001
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184d-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001843-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110b-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001108-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001850-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001106-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184f-0000-1000-8000-00805f9b34fb
+[NRF5340_AUDIO]# show
+Controller 14:75:5B:3F:5E:02 (public)
+	Name: sachin-9-Notebook-PC
+	Alias: sachin-9-Notebook-PC
+	Class: 0x007c010c
+	Powered: yes
+	PowerState: on
+	Discoverable: no
+	DiscoverableTimeout: 0x000000b4
+	Pairable: yes
+	UUID: Message Notification Se.. (00001133-0000-1000-8000-00805f9b34fb)
+	UUID: A/V Remote Control        (0000110e-0000-1000-8000-00805f9b34fb)
+	UUID: OBEX Object Push          (00001105-0000-1000-8000-00805f9b34fb)
+	UUID: Audio Stream Control      (0000184e-0000-1000-8000-00805f9b34fb)
+	UUID: Message Access Server     (00001132-0000-1000-8000-00805f9b34fb)
+	UUID: Volume Offset Control     (00001845-0000-1000-8000-00805f9b34fb)
+	UUID: Audio Source              (0000110a-0000-1000-8000-00805f9b34fb)
+	UUID: PnP Information           (00001200-0000-1000-8000-00805f9b34fb)
+	UUID: IrMC Sync                 (00001104-0000-1000-8000-00805f9b34fb)
+	UUID: Volume Control            (00001844-0000-1000-8000-00805f9b34fb)
+	UUID: Vendor specific           (00005005-0000-1000-8000-0002ee000001)
+	UUID: Microphone Control        (0000184d-0000-1000-8000-00805f9b34fb)
+	UUID: Audio Input Control       (00001843-0000-1000-8000-00805f9b34fb)
+	UUID: A/V Remote Control Target (0000110c-0000-1000-8000-00805f9b34fb)
+	UUID: Generic Attribute Profile (00001801-0000-1000-8000-00805f9b34fb)
+	UUID: Phonebook Access Server   (0000112f-0000-1000-8000-00805f9b34fb)
+	UUID: Device Information        (0000180a-0000-1000-8000-00805f9b34fb)
+	UUID: Audio Sink                (0000110b-0000-1000-8000-00805f9b34fb)
+	UUID: Generic Access Profile    (00001800-0000-1000-8000-00805f9b34fb)
+	UUID: Headset                   (00001108-0000-1000-8000-00805f9b34fb)
+	UUID: Handsfree Audio Gateway   (0000111f-0000-1000-8000-00805f9b34fb)
+	UUID: Published Audio Capabil.. (00001850-0000-1000-8000-00805f9b34fb)
+	UUID: OBEX File Transfer        (00001106-0000-1000-8000-00805f9b34fb)
+	UUID: Broadcast Audio Scan      (0000184f-0000-1000-8000-00805f9b34fb)
+	Modalias: usb:v1D6Bp0246d0553
+	Discovering: no
+	Roles: central
+	Roles: peripheral
+	ExperimentalFeatures: BlueZ Offload Codecs      (a6695ace-ee7f-4fb9-881a-5fac66c629af)
+	ExperimentalFeatures: BlueZ Experimental ISO... (6fbaf188-05e0-496a-9885-d6ddfdb4e03e)
+Advertising Features:
+	ActiveInstances: 0x00 (0)
+	SupportedInstances: 0x0c (12)
+	SupportedIncludes: tx-power
+	SupportedIncludes: appearance
+	SupportedIncludes: local-name
+	SupportedSecondaryChannels: 1M
+	SupportedSecondaryChannels: 2M
+	SupportedSecondaryChannels: Coded
+	SupportedCapabilities Key: MinTxPower
+	SupportedCapabilities Value: -34
+	SupportedCapabilities Key: MaxTxPower
+	SupportedCapabilities Value: 7
+	SupportedCapabilities Key: MaxAdvLen
+	SupportedCapabilities Value: 0xfb (251)
+	SupportedCapabilities Key: MaxScnRspLen
+	SupportedCapabilities Value: 0xfb (251)
+	SupportedFeatures: CanSetTxPower
+	SupportedFeatures: HardwareOffload
+Advertisement Monitor Features:
+	SupportedMonitorTypes: or_patterns
+	SupportedFeatures: controller-patterns
+[NRF5340_AUDIO]# 
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+when the pulseaudio is inactive it's changing the uuid's and we can't see the audio source and audio sink as shown below
+
+
+sachin@sachin-9-Notebook-PC:~/ncs/v3.1.0/nrf/applications/nrf5340_audio$ systemctl --user stop pulseaudio.socket 
+sachin@sachin-9-Notebook-PC:~/ncs/v3.1.0/nrf/applications/nrf5340_audio$ systemctl --user status pulseaudio
+○ pulseaudio.service - Sound Service
+     Loaded: loaded (/usr/lib/systemd/user/pulseaudio.service; enabled; vendor preset: enabled)
+     Active: inactive (dead) since Thu 2026-02-26 13:12:30 IST; 1min 19s ago
+TriggeredBy: ○ pulseaudio.socket
+    Process: 32863 ExecStart=/usr/bin/pulseaudio --daemonize=no --log-target=journal (code=exited, s>
+   Main PID: 32863 (code=exited, status=0/SUCCESS)
+        CPU: 198ms
+
+Feb 26 12:57:11 sachin-9-Notebook-PC systemd[1543]: Starting Sound Service...
+Feb 26 12:57:12 sachin-9-Notebook-PC systemd[1543]: Started Sound Service.
+Feb 26 12:57:12 sachin-9-Notebook-PC pulseaudio[32863]: Remote endpoint /org/bluez/hci0/dev_7D_BA_B9>
+Feb 26 12:57:12 sachin-9-Notebook-PC pulseaudio[32863]: Remote endpoint /org/bluez/hci0/dev_7D_BA_B9>
+Feb 26 13:12:30 sachin-9-Notebook-PC systemd[1543]: Stopping Sound Service...
+Feb 26 13:12:30 sachin-9-Notebook-PC systemd[1543]: Stopped Sound Service.
+lines 1-14/14 (END)
+
+
+
+in bluetoothctl 
+
+[CHG] Controller 14:75:5B:3F:5E:02 Class: 0x0078010c
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001133-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001845-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001104-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001844-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00005005-0000-1000-8000-0002ee000001
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184d-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001843-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001850-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001106-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 Class: 0x0070010c
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001133-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001845-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001104-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001844-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00005005-0000-1000-8000-0002ee000001
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184d-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001843-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001850-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001106-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 Class: 0x0050010c
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001133-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001845-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001104-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001844-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00005005-0000-1000-8000-0002ee000001
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184d-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001843-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001850-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001106-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 Class: 0x0010010c
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001133-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184e-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001845-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001104-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001844-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00005005-0000-1000-8000-0002ee000001
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184d-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001843-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001850-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 00001106-0000-1000-8000-00805f9b34fb
+[CHG] Controller 14:75:5B:3F:5E:02 UUIDs: 0000184f-0000-1000-8000-00805f9b34fb
+[NRF5340_AUDIO]# show
+Controller 14:75:5B:3F:5E:02 (public)
+	Name: sachin-9-Notebook-PC
+	Alias: sachin-9-Notebook-PC
+	Class: 0x0010010c
+	Powered: yes
+	PowerState: on
+	Discoverable: no
+	DiscoverableTimeout: 0x000000b4
+	Pairable: yes
+	UUID: Message Notification Se.. (00001133-0000-1000-8000-00805f9b34fb)
+	UUID: A/V Remote Control        (0000110e-0000-1000-8000-00805f9b34fb)
+	UUID: OBEX Object Push          (00001105-0000-1000-8000-00805f9b34fb)
+	UUID: Audio Stream Control      (0000184e-0000-1000-8000-00805f9b34fb)
+	UUID: Message Access Server     (00001132-0000-1000-8000-00805f9b34fb)
+	UUID: Volume Offset Control     (00001845-0000-1000-8000-00805f9b34fb)
+	UUID: PnP Information           (00001200-0000-1000-8000-00805f9b34fb)
+	UUID: IrMC Sync                 (00001104-0000-1000-8000-00805f9b34fb)
+	UUID: Volume Control            (00001844-0000-1000-8000-00805f9b34fb)
+	UUID: Vendor specific           (00005005-0000-1000-8000-0002ee000001)
+	UUID: Microphone Control        (0000184d-0000-1000-8000-00805f9b34fb)
+	UUID: Audio Input Control       (00001843-0000-1000-8000-00805f9b34fb)
+	UUID: A/V Remote Control Target (0000110c-0000-1000-8000-00805f9b34fb)
+	UUID: Generic Attribute Profile (00001801-0000-1000-8000-00805f9b34fb)
+	UUID: Phonebook Access Server   (0000112f-0000-1000-8000-00805f9b34fb)
+	UUID: Device Information        (0000180a-0000-1000-8000-00805f9b34fb)
+	UUID: Generic Access Profile    (00001800-0000-1000-8000-00805f9b34fb)
+	UUID: Published Audio Capabil.. (00001850-0000-1000-8000-00805f9b34fb)
+	UUID: OBEX File Transfer        (00001106-0000-1000-8000-00805f9b34fb)
+	UUID: Broadcast Audio Scan      (0000184f-0000-1000-8000-00805f9b34fb)
+	Modalias: usb:v1D6Bp0246d0553
+	Discovering: no
+	Roles: central
+	Roles: peripheral
+	ExperimentalFeatures: BlueZ Offload Codecs      (a6695ace-ee7f-4fb9-881a-5fac66c629af)
+	ExperimentalFeatures: BlueZ Experimental ISO... (6fbaf188-05e0-496a-9885-d6ddfdb4e03e)
+Advertising Features:
+	ActiveInstances: 0x00 (0)
+	SupportedInstances: 0x0c (12)
+	SupportedIncludes: tx-power
+	SupportedIncludes: appearance
+	SupportedIncludes: local-name
+	SupportedSecondaryChannels: 1M
+	SupportedSecondaryChannels: 2M
+	SupportedSecondaryChannels: Coded
+	SupportedCapabilities Key: MinTxPower
+	SupportedCapabilities Value: -34
+	SupportedCapabilities Key: MaxTxPower
+	SupportedCapabilities Value: 7
+	SupportedCapabilities Key: MaxAdvLen
+	SupportedCapabilities Value: 0xfb (251)
+	SupportedCapabilities Key: MaxScnRspLen
+	SupportedCapabilities Value: 0xfb (251)
+	SupportedFeatures: CanSetTxPower
+	SupportedFeatures: HardwareOffload
+Advertisement Monitor Features:
+	SupportedMonitorTypes: or_patterns
+	SupportedFeatures: controller-patterns
+[NRF5340_AUDIO]# 
+
+
